@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HEMLABS — हिंदी टेक्स्ट टू स्पीच</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1116;
+    --surface:#171B24;
+    --surface-2:#1F2430;
+    --line:#2A3040;
+    --text:#EDEFF5;
+    --muted:#8890A6;
+    --violet:#6C5CE7;
+    --violet-soft:rgba(108,92,231,.15);
+    --teal:#21D4B4;
+    --teal-soft:rgba(33,212,180,.15);
+    --danger:#FF6B6B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse 120% 80% at 50% -10%, #1a1f2e 0%, var(--bg) 55%);
+    color:var(--text);
+    font-family:'Hind',sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+  }
+  .brand{font-family:'Poppins',sans-serif;}
+
+  /* ---------- Waveform hero ---------- */
+  .hero{
+    max-width:920px;
+    margin:0 auto;
+    padding:56px 24px 28px;
+    text-align:center;
+  }
+  .logo-row{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin-bottom:22px;
+  }
+  .logo-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,var(--violet),var(--teal));
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .logo-mark svg{width:18px;height:18px;}
+  .logo-text{font-size:22px;font-weight:800;letter-spacing:.5px;color:var(--text);}
+  .logo-text span{color:var(--teal);}
+
+  #hero-wave{display:block;margin:0 auto 24px;width:100%;max-width:560px;height:64px;}
+  #hero-wave rect{fill:var(--violet);opacity:.55;}
+
+  .hero h1{
+    font-size:clamp(28px,4.2vw,42px);
+    font-weight:700;
+    margin:0 0 12px;
+    letter-spacing:-.5px;
+  }
+  .hero p{
+    color:var(--muted);
+    font-size:17px;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  /* ---------- Main card ---------- */
+  .wrap{max-width:820px;margin:0 auto;padding:8px 24px 80px;}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:28px;
+    margin-top:28px;
+  }
+  label.field-label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  textarea{
+    width:100%;
+    min-height:150px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    color:var(--text);
+    font-family:'Hind',sans-serif;
+    font-size:17px;
+    padding:16px;
+    resize:vertical;
+    outline:none;
+    transition:border-color .15s;
+  }
+  textarea:focus{border-color:var(--violet);}
+  textarea::placeholder{color:#565f75;}
+
+  .char-count{
+    text-align:right;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  .row{display:flex;gap:16px;margin-top:22px;flex-wrap:wrap;}
+  .col{flex:1;min-width:220px;}
+
+  select{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:'Hind',sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border-radius:10px;
+    outline:none;
+    cursor:pointer;
+  }
+  select:focus{border-color:var(--violet);}
+
+  .voice-pills{display:flex;gap:8px;margin-bottom:10px;}
+  .pill{
+    flex:1;
+    text-align:center;
+    padding:9px 0;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--surface-2);
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    user-select:none;
+    transition:.15s;
+  }
+  .pill.active[data-g="f"]{background:var(--violet-soft);border-color:var(--violet);color:#C9C1FF;}
+  .pill.active[data-g="m"]{background:var(--teal-soft);border-color:var(--teal);color:#9CF3E4;}
+  .pill.active[data-g="a"]{background:#2A3040;border-color:#4A5268;color:var(--text);}
+
+  .sliders{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;}
+  .slider-box label{
+    display:flex;justify-content:space-between;
+    font-size:13px;color:var(--muted);margin-bottom:8px;
+  }
+  .slider-box output{color:var(--text);font-weight:600;}
+  input[type="range"]{
+    -webkit-appearance:none;width:100%;height:5px;border-radius:3px;
+    background:var(--line);outline:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:17px;height:17px;border-radius:50%;
+    background:var(--violet);cursor:pointer;border:3px solid #12141C;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:17px;height:17px;border-radius:50%;
+    background:var(--violet);cursor:pointer;border:3px solid #12141C;
+  }
+
+  .controls{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  button{
+    font-family:'Hind',sans-serif;
+    font-size:15px;font-weight:600;
+    padding:13px 22px;
+    border-radius:11px;
+    border:none;
+    cursor:pointer;
+    display:flex;align-items:center;gap:8px;
+    transition:.15s;
+  }
+  button:disabled{opacity:.4;cursor:not-allowed;}
+  button svg{width:17px;height:17px;flex-shrink:0;}
+
+  #btnSpeak{background:var(--violet);color:#fff;}
+  #btnSpeak:not(:disabled):hover{background:#7C6CF5;}
+  #btnPause{background:var(--surface-2);color:var(--text);border:1px solid var(--line);}
+  #btnPause:not(:disabled):hover{border-color:#4A5268;}
+  #btnStop{background:var(--surface-2);color:var(--text);border:1px solid var(--line);}
+  #btnStop:not(:disabled):hover{border-color:#4A5268;}
+  #btnDownload{background:var(--teal);color:#08201B;margin-left:auto;}
+  #btnDownload:not(:disabled):hover{background:#37E6C7;}
+
+  .status{
+    margin-top:16px;
+    font-size:13.5px;
+    color:var(--muted);
+    display:flex;align-items:center;gap:8px;
+    min-height:18px;
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .status.speaking .dot{background:var(--teal);animation:pulse 1s infinite;}
+  .status.recording .dot{background:var(--danger);animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .note{
+    margin-top:14px;
+    font-size:13px;
+    color:var(--muted);
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    display:none;
+  }
+  .note.show{display:block;}
+  .note b{color:var(--text);}
+
+  footer{
+    text-align:center;
+    color:#565f75;
+    font-size:13px;
+    padding:0 24px 40px;
+  }
+
+  @media (max-width:560px){
+    .sliders{grid-template-columns:1fr;}
+    #btnDownload{margin-left:0;width:100%;justify-content:center;}
+    .controls{flex-direction:column;}
+    #btnSpeak,#btnPause,#btnStop{width:100%;justify-content:center;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .status.speaking .dot, .status.recording .dot{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo-row">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z" fill="white"/><path d="M5 11a7 7 0 0014 0M12 18v3" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+    <div class="logo-text">HEM<span>LABS</span></div>
+  </div>
+
+  <svg id="hero-wave" viewBox="0 0 560 64" preserveAspectRatio="none"></svg>
+
+  <h1>अपने टेक्स्ट को आवाज़ दीजिए</h1>
+  <p>हिंदी और इंग्लिश टेक्स्ट को नेचुरल लड़का या लड़की की आवाज़ में सुनिए — बिल्कुल फ्री, बिना लॉगिन के।</p>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <label class="field-label" for="text">टेक्स्ट लिखें</label>
+    <textarea id="text" placeholder="यहाँ अपना हिंदी या अंग्रेज़ी टेक्स्ट टाइप करें... उदाहरण: नमस्ते, आप कैसे हैं?" maxlength="3000"></textarea>
+    <div class="char-count"><span id="charCount">0</span> / 3000</div>
+
+    <div class="row">
+      <div class="col">
+        <label class="field-label">आवाज़ का टाइप</label>
+        <div class="voice-pills">
+          <div class="pill active" data-g="a" id="pillAll">सभी</div>
+          <div class="pill" data-g="f" id="pillFemale">👩 लड़की</div>
+          <div class="pill" data-g="m" id="pillMale">👦 लड़का</div>
+        </div>
+        <select id="voiceSelect"></select>
+      </div>
+      <div class="col">
+        <label class="field-label">भाषा प्राथमिकता</label>
+        <select id="langSelect">
+          <option value="hi">हिंदी आवाज़ें पहले दिखाएं</option>
+          <option value="all">सभी भाषाओं की आवाज़ें दिखाएं</option>
+        </select>
+        <label class="field-label" style="margin-top:18px;">डाउनलोड फॉर्मेट</label>
+        <select id="formatSelect">
+          <option value="mp3">MP3</option>
+          <option value="webm">WEBM (ज़्यादा सपोर्टेड)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sliders">
+      <div class="slider-box">
+        <label>स्पीड <output id="rateOut">1.0x</output></label>
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+      </div>
+      <div class="slider-box">
+        <label>पिच <output id="pitchOut">1.0</output></label>
+        <input type="range" id="pitch" min="0" max="2" step="0.1" value="1">
+      </div>
+      <div class="slider-box">
+        <label>वॉल्यूम <output id="volOut">100%</output></label>
+        <input type="range" id="vol" min="0" max="1" step="0.05" value="1">
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="btnSpeak">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 4l14 8-14 8V4z" fill="currentColor"/></svg>
+        सुनें / Speak
+      </button>
+      <button id="btnPause" disabled>
+        <svg viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
+        रोकें
+      </button>
+      <button id="btnStop" disabled>
+        <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="2" fill="currentColor"/></svg>
+        बंद करें
+      </button>
+      <button id="btnDownload">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        MP3 डाउनलोड करें
+      </button>
+    </div>
+
+    <div class="status" id="status"><div class="dot"></div><span>तैयार</span></div>
+    <div class="note" id="downloadNote"></div>
+  </div>
+</div>
+
+<footer>HEMLABS · आपके ब्राउज़र में मौजूद आवाज़ों का इस्तेमाल करता है, इसलिए आवाज़ें डिवाइस के हिसाब से बदल सकती हैं।</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.0/lame.min.js"></script>
+<script>
+(function(){
+  // ---------- Hero waveform (decorative, static bars) ----------
+  var wave = document.getElementById('hero-wave');
+  var bars = 46;
+  for(var i=0;i<bars;i++){
+    var h = 8 + Math.round(Math.abs(Math.sin(i*0.4))*40 + Math.random()*8);
+    var r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x', i*(560/bars)+2);
+    r.setAttribute('y', (64-h)/2);
+    r.setAttribute('width', (560/bars)-4);
+    r.setAttribute('height', h);
+    r.setAttribute('rx', 2);
+    if(i%3===0) r.setAttribute('fill', 'var(--teal)');
+    wave.appendChild(r);
+  }
+
+  // ---------- Elements ----------
+  var textEl = document.getElementById('text');
+  var charCount = document.getElementById('charCount');
+  var voiceSelect = document.getElementById('voiceSelect');
+  var langSelect = document.getElementById('langSelect');
+  var formatSelect = document.getElementById('formatSelect');
+  var rate = document.getElementById('rate'), rateOut = document.getElementById('rateOut');
+  var pitch = document.getElementById('pitch'), pitchOut = document.getElementById('pitchOut');
+  var vol = document.getElementById('vol'), volOut = document.getElementById('volOut');
+  var btnSpeak = document.getElementById('btnSpeak');
+  var btnPause = document.getElementById('btnPause');
+  var btnStop = document.getElementById('btnStop');
+  var btnDownload = document.getElementById('btnDownload');
+  var statusEl = document.getElementById('status');
+  var statusText = statusEl.querySelector('span');
+  var pillAll = document.getElementById('pillAll');
+  var pillFemale = document.getElementById('pillFemale');
+  var pillMale = document.getElementById('pillMale');
+  var noteEl = document.getElementById('downloadNote');
+
+  var allVoices = [];
+  var genderFilter = 'a';
+  var isPaused = false;
+
+  textEl.addEventListener('input', function(){
+    charCount.textContent = textEl.value.length;
+  });
+
+  rate.addEventListener('input', function(){ rateOut.textContent = parseFloat(rate.value).toFixed(1)+'x'; });
+  pitch.addEventListener('input', function(){ pitchOut.textContent = parseFloat(pitch.value).toFixed(1); });
+  vol.addEventListener('input', function(){ volOut.textContent = Math.round(vol.value*100)+'%'; });
+
+  // ---------- Gender detection heuristic ----------
+  var femaleHints = ['female','woman','girl','kalpana','swara','aditi','priya','lekha','heera','neerja','shreya','zira','samantha','susan','victoria','karen','moira','tessa','veena','राधिका'];
+  var maleHints = ['male','man','boy','hemant','ravi','prabhat','madhur','rishi','daniel','david','mark','fred','alex','george','rocko'];
+
+  function detectGender(voice){
+    var n = (voice.name || '').toLowerCase();
+    for(var i=0;i<femaleHints.length;i++){ if(n.indexOf(femaleHints[i])!==-1) return 'f'; }
+    for(var i=0;i<maleHints.length;i++){ if(n.indexOf(maleHints[i])!==-1) return 'm'; }
+    // fallback: alternate by index so both pills always have options
+    return null;
+  }
+
+  function loadVoices(){
+    allVoices = window.speechSynthesis.getVoices().map(function(v, idx){
+      var g = detectGender(v);
+      if(!g) g = (idx % 2 === 0) ? 'f' : 'm'; // best-effort fallback so filters aren't empty
+      return { voice: v, gender: g };
+    });
+    populateVoiceList();
+  }
+
+  function populateVoiceList(){
+    var preferHindi = langSelect.value === 'hi';
+    var list = allVoices.slice();
+
+    if(genderFilter !== 'a'){
+      list = list.filter(function(item){ return item.gender === genderFilter; });
+    }
+
+    list.sort(function(a,b){
+      var aHi = a.voice.lang.toLowerCase().indexOf('hi') === 0 ? 0 : 1;
+      var bHi = b.voice.lang.toLowerCase().indexOf('hi') === 0 ? 0 : 1;
+      if(preferHindi && aHi !== bHi) return aHi - bHi;
+      return a.voice.name.localeCompare(b.voice.name);
+    });
+
+    voiceSelect.innerHTML = '';
+    if(list.length === 0){
+      var opt = document.createElement('option');
+      opt.textContent = 'कोई आवाज़ नहीं मिली — फ़िल्टर बदलें';
+      voiceSelect.appendChild(opt);
+      return;
+    }
+    list.forEach(function(item, i){
+      var opt = document.createElement('option');
+      var genderLabel = item.gender === 'f' ? '👩' : '👦';
+      opt.value = i;
+      opt.textContent = genderLabel + ' ' + item.voice.name + ' (' + item.voice.lang + ')';
+      voiceSelect.appendChild(opt);
+    });
+    voiceSelect._list = list;
+  }
+
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+  langSelect.addEventListener('change', populateVoiceList);
+
+  function setPill(g){
+    genderFilter = g;
+    [pillAll, pillFemale, pillMale].forEach(function(p){ p.classList.remove('active'); });
+    (g==='a'?pillAll:(g==='f'?pillFemale:pillMale)).classList.add('active');
+    populateVoiceList();
+  }
+  pillAll.addEventListener('click', function(){ setPill('a'); });
+  pillFemale.addEventListener('click', function(){ setPill('f'); });
+  pillMale.addEventListener('click', function(){ setPill('m'); });
+
+  function getSelectedVoice(){
+    var list = voiceSelect._list;
+    if(!list || !list.length) return null;
+    var idx = parseInt(voiceSelect.value, 10);
+    return list[idx] ? list[idx].voice : null;
+  }
+
+  function buildUtterance(){
+    var text = textEl.value.trim();
+    if(!text){ alert('पहले कुछ टेक्स्ट लिखें।'); return null; }
+    var u = new SpeechSynthesisUtterance(text);
+    var v = getSelectedVoice();
+    if(v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'hi-IN'; }
+    u.rate = parseFloat(rate.value);
+    u.pitch = parseFloat(pitch.value);
+    u.volume = parseFloat(vol.value);
+    return u;
+  }
+
+  function setStatus(mode, msg){
+    statusEl.className = 'status' + (mode ? ' '+mode : '');
+    statusText.textContent = msg;
+  }
+
+  // ---------- Speak / Pause / Stop ----------
+  btnSpeak.addEventListener('click', function(){
+    window.speechSynthesis.cancel();
+    var u = buildUtterance();
+    if(!u) return;
+    isPaused = false;
+    u.onstart = function(){
+      setStatus('speaking', 'बोल रहा है...');
+      btnPause.disabled = false; btnStop.disabled = false;
+    };
+    u.onend = function(){
+      setStatus('', 'तैयार');
+      btnPause.disabled = true; btnStop.disabled = true;
+      btnPause.textContent = 'रोकें';
+    };
+    u.onerror = function(){
+      setStatus('', 'एक गड़बड़ी हुई — दोबारा कोशिश करें');
+      btnPause.disabled = true; btnStop.disabled = true;
+    };
+    window.speechSynthesis.speak(u);
+  });
+
+  btnPause.addEventListener('click', function(){
+    if(!isPaused){
+      window.speechSynthesis.pause();
+      isPaused = true;
+      btnPause.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 4l14 8-14 8V4z" fill="currentColor"/></svg> जारी रखें';
+      setStatus('', 'रुका हुआ');
+    } else {
+      window.speechSynthesis.resume();
+      isPaused = false;
+      btnPause.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg> रोकें';
+      setStatus('speaking', 'बोल रहा है...');
+    }
+  });
+
+  btnStop.addEventListener('click', function(){
+    window.speechSynthesis.cancel();
+    setStatus('', 'तैयार');
+    btnPause.disabled = true; btnStop.disabled = true;
+    isPaused = false;
+    btnPause.innerHTML = 'रोकें';
+  });
+
+  // ---------- Download as MP3 / WEBM ----------
+  // Technique: capture this tab's audio via getDisplayMedia (user must tick
+  // "share tab audio" in the browser prompt), record with MediaRecorder while
+  // speechSynthesis speaks, then (for MP3) decode + re-encode with lamejs.
+  btnDownload.addEventListener('click', async function(){
+    var text = textEl.value.trim();
+    if(!text){ alert('पहले कुछ टेक्स्ट लिखें।'); return; }
+
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia){
+      showNote('आपका ब्राउज़र रिकॉर्डिंग सपोर्ट नहीं करता। कृपया Chrome या Edge डेस्कटॉप पर खोलें।');
+      return;
+    }
+
+    var wantMp3 = formatSelect.value === 'mp3';
+    btnDownload.disabled = true;
+    showNote('अगले पॉपअप में <b>"इस टैब का ऑडियो शेयर करें / Share tab audio"</b> ज़रूर टिक करें, वरना आवाज़ रिकॉर्ड नहीं होगी।');
+
+    try{
+      var displayStream = await navigator.mediaDevices.getDisplayMedia({ video:true, audio:true });
+      var audioTracks = displayStream.getAudioTracks();
+      if(audioTracks.length === 0){
+        showNote('ऑडियो शेयर नहीं हुआ। दोबारा कोशिश करें और "Share tab audio" ज़रूर टिक करें।');
+        displayStream.getTracks().forEach(function(t){ t.stop(); });
+        btnDownload.disabled = false;
+        return;
+      }
+      var audioStream = new MediaStream(audioTracks);
+      var mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
+      var recorder = new MediaRecorder(audioStream, { mimeType: mimeType });
+      var chunks = [];
+      recorder.ondataavailable = function(e){ if(e.data.size>0) chunks.push(e.data); };
+
+      recorder.start();
+      setStatus('recording', 'रिकॉर्ड हो रहा है...');
+
+      window.speechSynthesis.cancel();
+      var u = buildUtterance();
+
+      var finished = function(){
+        setTimeout(function(){
+          recorder.stop();
+        }, 300); // small tail so last word isn't cut
+      };
+      u.onend = finished;
+      u.onerror = finished;
+      window.speechSynthesis.speak(u);
+
+      recorder.onstop = async function(){
+        displayStream.getTracks().forEach(function(t){ t.stop(); });
+        setStatus('', 'तैयार');
+        var webmBlob = new Blob(chunks, { type:'audio/webm' });
+
+        if(!wantMp3){
+          downloadBlob(webmBlob, 'hemlabs-audio.webm');
+          hideNote();
+          btnDownload.disabled = false;
+          return;
+        }
+
+        showNote('MP3 में बदला जा रहा है, कृपया थोड़ा इंतज़ार करें...');
+        try{
+          var mp3Blob = await webmToMp3(webmBlob);
+          downloadBlob(mp3Blob, 'hemlabs-audio.mp3');
+          hideNote();
+        }catch(err){
+          console.error(err);
+          showNote('MP3 बनाने में दिक्कत आई, इसलिए WEBM फ़ाइल डाउनलोड की जा रही है।');
+          downloadBlob(webmBlob, 'hemlabs-audio.webm');
+        }
+        btnDownload.disabled = false;
+      };
+
+    }catch(err){
+      console.error(err);
+      setStatus('', 'तैयार');
+      if(err.name === 'NotAllowedError'){
+        showNote('रिकॉर्डिंग की अनुमति नहीं मिली। डाउनलोड के लिए टैब ऑडियो शेयर करना ज़रूरी है।');
+      } else {
+        showNote('कुछ गड़बड़ हुई। कृपया दोबारा कोशिश करें।');
+      }
+      btnDownload.disabled = false;
+    }
+  });
+
+  function showNote(html){ noteEl.innerHTML = html; noteEl.classList.add('show'); }
+  function hideNote(){ noteEl.classList.remove('show'); }
+
+  function downloadBlob(blob, filename){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+  }
+
+  // Decode webm/opus blob -> PCM -> encode MP3 with lamejs
+  function webmToMp3(webmBlob){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        var ctx = new AudioCtx();
+        ctx.decodeAudioData(reader.result, function(buffer){
+          try{
+            var channels = buffer.numberOfChannels;
+            var sampleRate = buffer.sampleRate;
+            var mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+            var mp3Data = [];
+
+            var ch0 = buffer.getChannelData(0);
+            var ch1 = channels > 1 ? buffer.getChannelData(1) : ch0;
+
+            function floatTo16(input){
+              var out = new Int16Array(input.length);
+              for(var i=0;i<input.length;i++){
+                var s = Math.max(-1, Math.min(1, input[i]));
+                out[i] = s < 0 ? s*0x8000 : s*0x7FFF;
+              }
+              return out;
+            }
+            var left = floatTo16(ch0);
+            var right = channels > 1 ? floatTo16(ch1) : left;
+
+            var blockSize = 1152;
+            for(var i=0;i<left.length;i+=blockSize){
+              var lchunk = left.subarray(i, i+blockSize);
+              var rchunk = right.subarray(i, i+blockSize);
+              var mp3buf = channels > 1 ? mp3encoder.encodeBuffer(lchunk, rchunk) : mp3encoder.encodeBuffer(lchunk);
+              if(mp3buf.length > 0) mp3Data.push(new Int8Array(mp3buf));
+            }
+            var endBuf = mp3encoder.flush();
+            if(endBuf.length > 0) mp3Data.push(new Int8Array(endBuf));
+
+            resolve(new Blob(mp3Data, { type:'audio/mp3' }));
+          }catch(e){ reject(e); }
+        }, reject);
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(webmBlob);
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
